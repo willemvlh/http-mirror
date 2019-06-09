@@ -2,31 +2,39 @@ const port = process.argv[2] || 3000;
 import express from "express";
 import bodyParser from "body-parser";
 import chalk from "chalk";
+import { IncomingHttpHeaders } from "http";
 
 var app = express();
 app.use(bodyParser.raw({type: '*/*'}));
 const colorMap : {[s: string]: Function} = {
-  "POST": chalk.bgRed,
-  "GET": chalk.bgGreen,
-  "PUT": chalk.bgBlue
+  "POST": chalk.bgGreen,
+  "GET": chalk.bgBlue,
+  "PUT": chalk.bgYellow.black,
+  "DELETE": chalk.bgRed
 }
 const color : Function = (httpMethod : string) => {
   let f = colorMap[httpMethod];
-  return f(httpMethod);
+  return f ? f(httpMethod) : chalk.bgCyan(httpMethod);
 }
 
-const logBody : Function = (body: Buffer) => {
+const logBody = (body: Buffer) : void => {
   console.log("Body:\n");
-  console.log(body.toString("utf-8"))
+  console.log(chalk.black.bgWhite(body.length ? body.toString("utf-8") : "[empty]"));
 }
 
-const logHeaders : Function = (headers: string[]) => {
+const logHeaders = (headers: IncomingHttpHeaders) : void => {
   console.log("Headers:\n");
   console.table(headers);
 }
+
+const logTime = () : void => {
+  console.log(`[${(new Date()).toLocaleTimeString()}]`);
+}
+
 const handleRequest = (req: express.Request, res: express.Response) => {
-  console.log("------------")
-  console.log(`Received ${color(req.method)} request from ${req.ip}.\n`);
+  console.log("------------");
+  logTime();
+  console.log(`Received ${color(req.method)} request from ${req.ip} at ${req.path}.\n`);
   logHeaders(req.headers);
   logBody(req.body);
   console.log("------------")
@@ -34,11 +42,9 @@ const handleRequest = (req: express.Request, res: express.Response) => {
   res.end();
 };
 
-app.post("/*", handleRequest);
-app.put("/*", handleRequest);
-app.get("/*", handleRequest);
+app.all("/*", handleRequest)
 
 app.listen(port);
 console.log(
-  "Listening for PUT/POST/GET requests on all endpoints on port " + port
+  "Listening for HTTP requests on all endpoints on port " + port
 );
