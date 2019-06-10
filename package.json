@@ -1,24 +1,28 @@
 {
-  "name": "http-mirror",
-  "version": "0.1.0",
-  "description": "Mirrors incoming HTTP requests",
-  "main": "index.js",
+  "name": "http-request-inspector",
+  "version": "0.2.0",
+  "description": "Inspect incoming HTTP requests",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "watch": "tsc --watch && nodemon index.js",
     "serve": "tsc && node index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Willem V",
+  "license": "MIT",
   "dependencies": {
     "body-parser": "^1.18.3",
     "chalk": "^2.4.2",
     "express": "^4.16.4"
   },
+  "preferGlobal": true,
+  "bin": {
+    "http-request-inspector": "./bin/http-request-inspector"
+  },
   "devDependencies": {
     "@types/express": "^4.17.0",
     "@types/node": "^12.0.7",
     "typescript": "^3.5.1"
-  }
+  },
+  "keywords": ["http", "server", "inspect"]
 }

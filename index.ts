@@ -19,7 +19,7 @@ const color : Function = (httpMethod : string) => {
 
 const logBody = (body: Buffer) : void => {
   console.log("Body:\n");
-  console.log(chalk.black.bgWhite(body.length ? body.toString("utf-8") : "[empty]"));
+  console.log(body.length ? body.toString("utf-8") : "[empty]");
 }
 
 const logHeaders = (headers: IncomingHttpHeaders) : void => {
@@ -32,7 +32,6 @@ const logTime = () : void => {
 }
 
 const handleRequest = (req: express.Request, res: express.Response) => {
-  console.log("------------");
   logTime();
   console.log(`Received ${color(req.method)} request from ${req.ip} at ${req.path}.\n`);
   logHeaders(req.headers);

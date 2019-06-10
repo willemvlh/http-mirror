@@ -1,13 +1,11 @@
 # A mocking server
 
-This program listens to POST requests and simply returns the body it is sent. The body is also printed to the console.
+This program listens to HTTP requests and returns the body it is sent. More information is found in the console.
 
 ## Installing
 
-- Download and install [NodeJS](https://nodejs.org/en/).
-- Clone this repository.
-- Open the command line in this repository and enter `npm install`.
+ `npm install -g http-request-inspector`
 
 ## Running
 
-- Open the command line and enter `node index.js 0000` (where is the port you want to listen on).
+`http-request-inspector 3000` where `3000` is the port you want (3000 is also the default).
