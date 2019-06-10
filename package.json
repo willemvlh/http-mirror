@@ -1,6 +1,6 @@
 {
   "name": "http-request-inspector",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Inspect incoming HTTP requests",
   "main": "./dist/index.js",
   "scripts": {
@@ -24,5 +24,9 @@
     "@types/node": "^12.0.7",
     "typescript": "^3.5.1"
   },
-  "keywords": ["http", "server", "inspect"]
+  "keywords": [
+    "http",
+    "server",
+    "inspect"
+  ]
 }

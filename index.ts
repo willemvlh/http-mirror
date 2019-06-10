@@ -1,4 +1,5 @@
 const port = process.argv[2] || 3000;
+const version : string = require("../package.json")["version"]
 import express from "express";
 import bodyParser from "body-parser";
 import chalk from "chalk";
@@ -44,6 +45,5 @@ const handleRequest = (req: express.Request, res: express.Response) => {
 app.all("/*", handleRequest)
 
 app.listen(port);
-console.log(
-  "Listening for HTTP requests on all endpoints on port " + port
-);
+console.log(`HTTP request inspector ${version}`);
+console.log("Listening for HTTP requests on all endpoints on port " + port);
