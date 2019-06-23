@@ -38,7 +38,7 @@ const handleRequest = (req: express.Request, res: express.Response) => {
   logBody(req.body);
   console.log("------------")
   res.status(200);
-  res.end(req.body);
+  res.send(req.body);
 };
 
 app.all("/*", handleRequest)
