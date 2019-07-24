@@ -1,32 +1,7 @@
 import app from "../src/App";
 import supertest from "supertest";
-import { ILogger } from "../src/Logger";
-import RequestHandler from "../src/RequestHandler";
-import { IncomingHttpHeaders } from "http2";
-
-interface LogObject {
-  body: Buffer | object;
-  headers: IncomingHttpHeaders;
-  time: string;
-}
-
-class TestRequestHandler extends RequestHandler {
-  logObject: LogObject = { time: "", headers: {}, body: Buffer.from("") };
-  logTime = (time: string) => (this.logObject.time = time);
-  logBody = (body: Buffer | object) => (this.logObject.body = body);
-  logHeaders = (headers: any) => (this.logObject.headers = headers);
-  color = (method: string) => {
-    return function(str: any) {
-      return str;
-    };
-  };
-}
-
-class NoLogger implements ILogger {
-  log(subject: any) {}
-  logTable(subject: any) {}
-  clear() {}
-}
+import { TestRequestHandler } from "./TestRequestHandler";
+import { NoLogger } from "./NoLogger";
 
 const testHandler = new TestRequestHandler(new NoLogger());
 app.all("*/*", testHandler.handle);
@@ -63,6 +38,11 @@ describe("PUT", () => {
   it("The header should be returned", async done => {
     await agent.put("/put").set(header);
     expect(testHandler.logObject.headers).toHaveProperty("some", "header");
+    done();
+  });
+  it("The parameters should be logged", async done => {
+    await agent.put("/someOtherPath?code=400");
+    expect(testHandler.logObject.params).toHaveProperty("code", "400");
     done();
   });
 });

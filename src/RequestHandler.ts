@@ -21,6 +21,7 @@ class RequestHandler {
         req.path
       }.\n`
     );
+    this.logParams(req.query);
     this.logHeaders(req.headers);
     this.logBody(req.body);
     this.log("------------");
@@ -38,6 +39,13 @@ class RequestHandler {
   color = (httpMethod: string) => {
     let f = this.colorMap[httpMethod];
     return f ? f(httpMethod) : chalk.bgCyan(httpMethod);
+  };
+
+  logParams = (params: any) => {
+    if (params) {
+      this.logger.log("Parameters:\n");
+      this.logger.logTable(params);
+    }
   };
 
   logBody = (body: Buffer): void => {

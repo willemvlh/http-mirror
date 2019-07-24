@@ -14,17 +14,29 @@ var RequestHandler = /** @class */ (function () {
             DELETE: chalk_1.default.bgRed
         };
         this.handle = function (req, res) {
-            _this.logTime();
-            _this.logger.log("Received " + _this.color(req.method) + " request from " + req.ip + " at " + req.path + ".\n");
+            _this.logTime("[" + new Date().toLocaleTimeString() + "]");
+            _this.log("Received " + _this.color(req.method) + " request from " + req.ip + " at " + req.path + ".\n");
+            _this.logParams(req.query);
             _this.logHeaders(req.headers);
             _this.logBody(req.body);
-            _this.logger.log("------------");
+            _this.log("------------");
             res.status(200);
             res.send(req.body);
+            _this.clearLog();
         };
+        this.log = function (subject) {
+            _this.logger.log(subject);
+        };
+        this.clearLog = function () { return _this.logger.clear(); };
         this.color = function (httpMethod) {
             var f = _this.colorMap[httpMethod];
             return f ? f(httpMethod) : chalk_1.default.bgCyan(httpMethod);
+        };
+        this.logParams = function (params) {
+            if (params) {
+                _this.logger.log("Parameters:\n");
+                _this.logger.logTable(params);
+            }
         };
         this.logBody = function (body) {
             if (body) {
@@ -39,8 +51,8 @@ var RequestHandler = /** @class */ (function () {
             _this.logger.log("Headers:\n");
             _this.logger.logTable(headers);
         };
-        this.logTime = function () {
-            _this.logger.log("[" + new Date().toLocaleTimeString() + "]");
+        this.logTime = function (time) {
+            _this.logger.log(time);
         };
         this.logger = logger;
     }
