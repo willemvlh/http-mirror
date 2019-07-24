@@ -9,12 +9,12 @@ var express_1 = __importDefault(require("express"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var chalk_1 = __importDefault(require("chalk"));
 var app = express_1.default();
-app.use(body_parser_1.default.raw({ type: '*/*' }));
+app.use(body_parser_1.default.raw({ type: "*/*" }));
 var colorMap = {
-    "POST": chalk_1.default.bgGreen,
-    "GET": chalk_1.default.bgBlue,
-    "PUT": chalk_1.default.bgYellow.black,
-    "DELETE": chalk_1.default.bgRed
+    POST: chalk_1.default.bgGreen,
+    GET: chalk_1.default.bgBlue,
+    PUT: chalk_1.default.bgYellow.black,
+    DELETE: chalk_1.default.bgRed
 };
 var color = function (httpMethod) {
     var f = colorMap[httpMethod];
@@ -29,7 +29,7 @@ var logHeaders = function (headers) {
     console.table(headers);
 };
 var logTime = function () {
-    console.log("[" + (new Date()).toLocaleTimeString() + "]");
+    console.log("[" + new Date().toLocaleTimeString() + "]");
 };
 var handleRequest = function (req, res) {
     logTime();
@@ -38,9 +38,11 @@ var handleRequest = function (req, res) {
     logBody(req.body);
     console.log("------------");
     res.status(200);
-    res.end(req.body);
+    res.send(req.body);
 };
 app.all("/*", handleRequest);
-app.listen(port);
-console.log("HTTP request inspector " + version);
-console.log("Listening for HTTP requests on all endpoints on port " + port);
+app.listen(port, function () {
+    console.log("HTTP request inspector " + version);
+    console.log("Listening for HTTP requests on all endpoints on port " + port);
+});
+exports.default = app;
