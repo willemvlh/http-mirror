@@ -1,12 +1,13 @@
 {
   "name": "http-request-inspector",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Inspect incoming HTTP requests",
   "main": "./dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch && nodemon index.js",
-    "serve": "tsc && node index.js"
+    "serve": "tsc && node index.js",
+    "test": "jest"
   },
   "author": "Willem V",
   "license": "MIT",
