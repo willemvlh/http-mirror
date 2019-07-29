@@ -2,17 +2,29 @@ import app from "./App";
 import Logger from "./Logger";
 import RequestHandler from "./RequestHandler";
 
-const port = process.argv[2] || 3000;
-const version: string = require("../package.json")["version"];
+const version = require("../package.json")["version"];
 
-const logger = new Logger(console.log, console.table);
-let handler = new RequestHandler(logger);
+class Server {
+  port: Number = 3000;
+  log: (subject: any) => void = console.log;
+  tableLog: (subject: any) => void = console.table;
+  endpoint: string = "/*";
+  private setup() {
+    const logger = new Logger(this.log, console.table);
+    let handler = new RequestHandler(logger);
+    app.all(this.endpoint, handler.handle);
+  }
+  start(message: string) {
+    this.setup();
+    app.listen(this.port, () => {
+      console.log(message);
+    });
+  }
+}
 
-app.all("/*", handler.handle);
-//test
-app.listen(port, () => {
-  console.log(`HTTP request inspector ${version}`);
-  console.log("Listening for HTTP requests on all endpoints on port " + port);
-});
+const server = new Server();
+console.log(`HTTP Request Inspector ${version}`);
+server.start(`Listening for HTTP requests on port ${server.port}`);
 
-export default app;
+export default server;
+export { Server };
