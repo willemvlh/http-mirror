@@ -9,6 +9,9 @@
     "serve": "tsc && node index.js",
     "test": "jest"
   },
+  "repository": {
+    "url": "https://github.com/wasmachien75/http-mirror"
+  },
   "author": "Willem V",
   "license": "MIT",
   "dependencies": {
@@ -18,7 +21,7 @@
   },
   "preferGlobal": true,
   "bin": {
-    "http-request-inspector": "./bin/http-request-inspector"
+    "http-request-inspector": "./index.js"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

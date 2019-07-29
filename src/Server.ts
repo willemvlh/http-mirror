@@ -9,7 +9,7 @@ const logger = new Logger(console.log, console.table);
 let handler = new RequestHandler(logger);
 
 app.all("/*", handler.handle);
-
+//test
 app.listen(port, () => {
   console.log(`HTTP request inspector ${version}`);
   console.log("Listening for HTTP requests on all endpoints on port " + port);
