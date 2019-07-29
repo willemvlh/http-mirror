@@ -1,6 +1,6 @@
 {
   "name": "http-request-inspector",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Inspect incoming HTTP requests",
   "main": "./dist/index.js",
   "scripts": {
@@ -23,6 +23,10 @@
   "bin": {
     "http-request-inspector": "./index.js"
   },
+  "files": [
+    "dist",
+    "index.js"
+  ],
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/express": "^4.17.0",
