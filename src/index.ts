@@ -1,11 +1,7 @@
 #!/usr/bin/env node
 import Server from "./Server";
-import { Api } from "./Server";
-
-Server.start(
-  `Listening for HTTP requests on port ${Server.port} / endpoint: ${
-    Server.endpoint
-  }`
-);
-
-export default Api;
+const version = require("../package.json")["version"];
+const s = new Server();
+s.setPort(3000);
+s.setEndPoint("/*");
+s.start(`HTTP Request Inspector version ${version}`);

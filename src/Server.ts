@@ -3,8 +3,6 @@ import Logger from "./Logger";
 import RequestHandler from "./RequestHandler";
 import { Server as httpServer } from "http";
 
-const version = require("../package.json")["version"];
-
 class Api {
   private _port: Number = 3000;
   private _endpoint: string = "/*";
@@ -55,14 +53,8 @@ class Api {
       throw new Error("A server must have started before it can be stopped.");
     }
     this._server.close(callback);
+    this._server = null;
   }
 }
 
-const server = new Api()
-  .setEndPoint("/*")
-  .setPort(3000)
-  .log(`HTTP Request Inspector ${version}`)
-  .start("Started listening");
-
-export default server;
-export { Api };
+export default Api;

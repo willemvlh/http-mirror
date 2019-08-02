@@ -1,8 +1,8 @@
 {
   "name": "http-request-inspector",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Inspect incoming HTTP requests",
-  "main": "./dist/index.js",
+  "main": "./dist/Server.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch && nodemon index.js",
