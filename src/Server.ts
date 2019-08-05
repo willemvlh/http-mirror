@@ -4,37 +4,35 @@ import RequestHandler from "./RequestHandler";
 import { Server as httpServer } from "http";
 
 class Api {
-  private _port: Number = 3000;
-  private _endpoint: string = "/*";
-  private _server: httpServer | null = null;
-  private _setup() {
-    const logger = new Logger(this._logger, this._tableLogger);
+  //properties
+  public port: Number = 3000;
+  public endpoint: string = "/*";
+  public server: httpServer | null = null;
+  public httpMethod: string = "";
+  public logger: (subject: any) => void = console.log;
+  public tableLogger: (subject: any) => void = console.table;
+
+  private setup() {
+    //setup handler
+    const logger = new Logger(this.logger, this.tableLogger);
     let handler = new RequestHandler(logger);
-    app.all(this._endpoint, handler.handle);
-  }
-  private _logger: (subject: any) => void = console.log;
-  private _tableLogger: (subject: any) => void = console.table;
-
-  public readonly port: Number = this._port;
-  public readonly endpoint = this._endpoint;
-  public readonly logger = this._logger;
-  public readonly tableLogger = this._tableLogger;
-
-  setPort(portNumber: Number) {
-    this._port = portNumber;
-    return this;
-  }
-  setEndPoint(endPoint: string) {
-    this._endpoint = endPoint;
-    return this;
-  }
-  setLogger(logFunction: (subject: any) => void) {
-    this._logger = logFunction;
-    return this;
-  }
-  setTableLogger(tableLogFunction: (subject: any) => void) {
-    this._tableLogger = tableLogFunction;
-    return this;
+    //get correct Express handler based on the selected or default HTTP method.
+    switch (this.httpMethod.toUpperCase()) {
+      case "GET":
+        return app.get(this.endpoint, handler.handle);
+      case "POST":
+        return app.post(this.endpoint, handler.handle);
+      case "PUT":
+        return app.put(this.endpoint, handler.handle);
+      case "DELETE":
+        return app.delete(this.endpoint, handler.handle);
+      case "PATCH":
+        return app.patch(this.endpoint, handler.handle);
+      case "HEAD":
+        return app.head(this.endpoint, handler.handle);
+      default:
+        return app.all(this.endpoint, handler.handle);
+    }
   }
   log(message: string) {
     console.log(message);
@@ -42,18 +40,18 @@ class Api {
   }
 
   start(message: string) {
-    this._setup();
-    this._server = app.listen(this._port, () => {
+    this.setup();
+    this.server = app.listen(this.port, () => {
       console.log(message);
     });
     return this;
   }
   stop(callback?: ((err: Error | undefined) => void) | undefined) {
-    if (!this._server) {
+    if (!this.server) {
       throw new Error("A server must have started before it can be stopped.");
     }
-    this._server.close(callback);
-    this._server = null;
+    this.server.close(callback);
+    this.server = null;
   }
 }
 
