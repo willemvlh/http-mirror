@@ -40,14 +40,16 @@ class Api {
     return this;
   }
 
-  start(message?: string): Promise<Api> {
+  start(callback?: Function): Promise<Api> {
     let port = this.port;
     let self: Api = this;
     this.setup();
     return new Promise<Api>(function(resolve, reject) {
       try {
         self.server = app.listen(port, () => {
-          if (message) console.log(message);
+          if (callback != null || callback != undefined) {
+            callback();
+          }
           self.isRunning = true;
           resolve(self);
         });

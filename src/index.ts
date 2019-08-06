@@ -4,8 +4,10 @@ import chalk from "chalk";
 const version = require("../package.json")["version"];
 const s = new Server();
 s.port = 3000;
-s.start(
-  chalk.yellow(
-    `HTTP Request Inspector version ${version}.\nListening on port ${s.port}.`
+s.start(() =>
+  console.log(
+    chalk.yellow(
+      `HTTP Request Inspector version ${version}.\nListening on port ${s.port}.`
+    )
   )
 );
