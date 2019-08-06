@@ -11,6 +11,7 @@ class Api {
   public httpMethod: string = "";
   public logger: ((subject: any) => void) | null = console.log;
   public tableLogger: ((subject: any) => void) | null = console.table;
+  public isRunning: boolean = false;
 
   private setup() {
     //setup handler
@@ -34,24 +35,34 @@ class Api {
         return app.all(this.endpoint, handler.handle);
     }
   }
-  log(message: string) {
+  log(message: string): Api {
     console.log(message);
     return this;
   }
 
-  start(message?: string) {
+  start(message?: string): Promise<Api> {
+    let port = this.port;
+    let self: Api = this;
     this.setup();
-    this.server = app.listen(this.port, () => {
-      if (message) console.log(message);
+    return new Promise<Api>(function(resolve, reject) {
+      try {
+        self.server = app.listen(port, () => {
+          if (message) console.log(message);
+          self.isRunning = true;
+          resolve(self);
+        });
+      } catch (e) {
+        reject(e);
+      }
     });
-    return this;
   }
-  stop(callback?: ((err: Error | undefined) => void) | undefined) {
+  stop(callback?: ((err: Error | undefined) => void) | undefined): void {
     if (!this.server) {
       throw new Error("A server must have started before it can be stopped.");
     }
     this.server.close(callback);
     this.server = null;
+    this.isRunning = false;
   }
 }
 
