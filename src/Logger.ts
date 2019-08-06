@@ -5,11 +5,11 @@ interface ILogger {
 }
 
 class Logger implements ILogger {
-  logger: (subject: any) => void;
-  tableLogger: (subject: any) => void;
+  logger: ((subject: any) => void) | null;
+  tableLogger: ((subject: any) => void) | null;
   constructor(
-    logger: (subject: any) => void,
-    tableLogger: (subject: any) => void
+    logger: ((subject: any) => void) | null,
+    tableLogger: ((subject: any) => void) | null
   ) {
     this.logger = logger;
     if (tableLogger === null) {
@@ -19,10 +19,14 @@ class Logger implements ILogger {
     }
   }
   logTable(subject: any) {
-    this.tableLogger(subject);
+    if (this.tableLogger) {
+      this.tableLogger(subject);
+    }
   }
   log(subject: any) {
-    this.logger(subject);
+    if (this.logger) {
+      this.logger(subject);
+    }
   }
   clear() {}
 }

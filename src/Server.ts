@@ -9,8 +9,8 @@ class Api {
   public endpoint: string = "/*";
   public server: httpServer | null = null;
   public httpMethod: string = "";
-  public logger: (subject: any) => void = console.log;
-  public tableLogger: (subject: any) => void = console.table;
+  public logger: ((subject: any) => void) | null = console.log;
+  public tableLogger: ((subject: any) => void) | null = console.table;
 
   private setup() {
     //setup handler
@@ -39,10 +39,10 @@ class Api {
     return this;
   }
 
-  start(message: string) {
+  start(message?: string) {
     this.setup();
     this.server = app.listen(this.port, () => {
-      console.log(message);
+      if (message) console.log(message);
     });
     return this;
   }
