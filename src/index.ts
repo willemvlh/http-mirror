@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import Server from "./Server";
+import Table from "./Table";
 import chalk from "chalk";
 import { AddressInfo } from "net";
 
@@ -10,7 +11,7 @@ if (!Number.isInteger(defaultPort)) {
   throw new Error("The supplied port should be an integer");
 }
 s.port = defaultPort;
-
+s.tableLogger = Table;
 s.start(() => {
   let address: string = "";
   if (s.server != null) {
