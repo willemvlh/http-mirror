@@ -7,7 +7,7 @@ class Api {
   //properties
   public port: Number = 3000;
   public endpoint: string = "/*";
-  public server: httpServer | null = null;
+  public server?: httpServer = undefined;
   public httpMethod: string = "";
   public logger: ((subject: any) => void) | null = console.log;
   public tableLogger: ((subject: any) => void) | null = console.table;
@@ -59,11 +59,10 @@ class Api {
     });
   }
   stop(callback?: ((err: Error | undefined) => void) | undefined): void {
-    if (!this.server) {
+    if (!this.isRunning) {
       throw new Error("A server must have started before it can be stopped.");
     }
-    this.server.close(callback);
-    this.server = null;
+    this.server ? this.server.close(callback) : null;
     this.isRunning = false;
   }
 }

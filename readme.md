@@ -16,12 +16,11 @@ The inspector can be run from the command line:
 
 `http-request-inspector`
 
-There is also a small API:
+Or using the API:
 
-    //Typescript
     import Api from "http-request-inspector";
 
     const a = new Api();
-    a.setPort(2000);
-    a.setEndPoint("/test");
-    a.start("let's go");
+    a.port = 2000;
+    a.endpoint = "/mirror"
+    a.start(() => console.log("Listening for requests...));
