@@ -12,6 +12,7 @@ class Api {
   public logger: ((subject: any) => void) | null = console.log;
   public tableLogger: ((subject: any) => void) | null = console.table;
   public isRunning: boolean = false;
+  public onRequest: ((req: Express.Request) => void) | undefined = undefined;
 
   private setup() {
     //setup handler

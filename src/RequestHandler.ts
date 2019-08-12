@@ -11,23 +11,30 @@ class RequestHandler {
     PUT: chalk.bgYellow.black,
     DELETE: chalk.bgRed
   };
-  constructor(logger: ILogger) {
+  constructor(logger: ILogger, onRequest?: (req: express.Request) => void) {
     this.logger = logger;
+    if (onRequest != undefined) {
+      this.onRequest = onRequest;
+    }
   }
   handle = (req: express.Request, res: express.Response) => {
-    this.logTime(`[${new Date().toLocaleTimeString()}]`);
+    res.status(200);
+    res.send(req.body);
+    this.onRequest(req);
+    this.clearLog();
+  };
+
+  onRequest = (req: express.Request) => {
+    this.log("___________________");
     this.log(
-      `Received ${this.color(req.method)} request from ${req.ip} at ${
-        req.path
-      }.\n`
+      `[${new Date().toLocaleTimeString()}] Received ${this.color(
+        req.method
+      )} request from ${req.ip} at ${req.path}.\n`
     );
     this.logParams(req.query);
     this.logHeaders(req.headers);
     this.logBody(req.body);
-    this.log("------------");
-    res.status(200);
-    res.send(req.body);
-    this.clearLog();
+    this.log("___________________");
   };
 
   log = (subject: any) => {
@@ -42,7 +49,7 @@ class RequestHandler {
   };
 
   logParams = (params: any) => {
-    if (params) {
+    if (Object.keys(params).length > 0) {
       this.logger.log("Parameters:\n");
       this.logger.logTable(params);
     }
@@ -51,7 +58,7 @@ class RequestHandler {
   logBody = (body: Buffer): void => {
     if (body) {
       this.logger.log("Body:\n");
-      this.logger.log(body.length ? body.toString("utf-8") : "[empty]");
+      this.logger.log(body.length ? body.toString("utf-8") : "");
     } else {
       this.logger.log("No body attached to request");
     }
@@ -60,10 +67,6 @@ class RequestHandler {
   logHeaders = (headers: IncomingHttpHeaders): void => {
     this.logger.log("Headers:\n");
     this.logger.logTable(headers);
-  };
-
-  logTime = (time: string): void => {
-    this.logger.log(time);
   };
 }
 

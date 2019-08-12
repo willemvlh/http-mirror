@@ -46,7 +46,7 @@ function table(object: any) {
 
   for (let entry of Object.entries(object)) {
     stringBuilder.appendLine(
-      `║ ${entry[0].padEnd(longestKeyLength)} | ${String(entry[1]).padEnd(
+      `║ ${entry[0].padEnd(longestKeyLength)} ║ ${String(entry[1]).padEnd(
         longestValueLength
       )} ║`
     );
