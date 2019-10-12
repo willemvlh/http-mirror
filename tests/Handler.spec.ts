@@ -50,3 +50,10 @@ describe("PUT", () => {
     done();
   });
 });
+
+describe("No-reply option", () => {
+  let options = new HandlerOptions();
+  options.noReply = true;
+  let handler = new TestRequestHandler(new NoLogger(), options);
+  expect(handler.options.noReply).toBe(true);
+});
