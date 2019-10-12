@@ -2,8 +2,12 @@ import app from "../src/App";
 import supertest from "supertest";
 import { TestRequestHandler } from "./TestRequestHandler";
 import { NoLogger } from "./NoLogger";
+import HandlerOptions from "../src/HandlerOptions";
 
-const testHandler = new TestRequestHandler(new NoLogger());
+const testHandler = new TestRequestHandler(
+  new NoLogger(),
+  new HandlerOptions()
+);
 app.all("*/*", testHandler.handle);
 
 describe("GET", () => {

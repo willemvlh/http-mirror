@@ -1,9 +1,10 @@
 import app from "./App";
-import Logger from "./Logger";
+import Logger, { NoLogger } from "./Logger";
 import RequestHandler from "./RequestHandler";
 import { Server as httpServer } from "http";
+import HandlerOptions from "./HandlerOptions";
 
-class Api {
+class Server {
   //properties
   public port: Number = 3000;
   public endpoint: string = "/*";
@@ -12,12 +13,18 @@ class Api {
   public logger: ((subject: any) => void) | null = console.log;
   public tableLogger: ((subject: any) => void) | null = console.table;
   public isRunning: boolean = false;
-  public onRequest: ((req: Express.Request) => void) | undefined = undefined;
+  public onRequest: (req: Express.Request) => void = () => {};
+  public silent: boolean = false; // do not log requests
+  public noReply: boolean = false; //do not send an answer
+  public statusCode: number = 200;
 
   private setup() {
     //setup handler
-    const logger = new Logger(this.logger, this.tableLogger);
-    let handler = new RequestHandler(logger);
+    const logger = this.silent
+      ? new NoLogger()
+      : new Logger(this.logger, this.tableLogger);
+    let options = this.initializeHandlerOptions();
+    let handler = new RequestHandler(logger, options);
     //get correct Express handler based on the selected or default HTTP method.
     switch (this.httpMethod.toUpperCase()) {
       case "GET":
@@ -36,16 +43,23 @@ class Api {
         return app.all(this.endpoint, handler.handle);
     }
   }
-  log(message: string): Api {
+  initializeHandlerOptions(): HandlerOptions {
+    let options = new HandlerOptions();
+    options.noReply = this.noReply;
+    options.onRequest = this.onRequest;
+    options.statusCode = this.statusCode;
+    return options;
+  }
+  log(message: string): Server {
     console.log(message);
     return this;
   }
 
-  start(callback?: Function): Promise<Api> {
+  start(callback?: Function): Promise<Server> {
     let port = this.port;
-    let self: Api = this;
+    let self: Server = this;
     this.setup();
-    return new Promise<Api>(function(resolve, reject) {
+    return new Promise<Server>(function(resolve, reject) {
       try {
         self.server = app.listen(port, () => {
           if (callback != null || callback != undefined) {
@@ -68,4 +82,4 @@ class Api {
   }
 }
 
-export default Api;
+export default Server;

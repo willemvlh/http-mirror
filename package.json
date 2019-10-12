@@ -5,9 +5,10 @@
   "main": "./dist/Server.js",
   "scripts": {
     "build": "tsc",
-    "watch": "tsc --watch && nodemon index.js",
-    "serve": "tsc && node index.js",
-    "test": "jest"
+    "watch": "tsc --watch && nodemon dist/index.js",
+    "serve": "tsc && node dist/index.js",
+    "test": "jest",
+    "start": "ts-node src/index.ts"
   },
   "repository": {
     "url": "https://github.com/wasmachien75/http-mirror"
