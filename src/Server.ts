@@ -48,6 +48,7 @@ class Server {
     options.noReply = this.noReply;
     options.onRequest = this.onRequest;
     options.statusCode = this.statusCode;
+
     return options;
   }
   log(message: string): Server {
