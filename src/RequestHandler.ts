@@ -25,7 +25,6 @@ class RequestHandler {
       res.send(req.body);
     } else {
       res.end();
-      console.log("ended it!");
     }
     this.onRequest(req);
     this.clearLog();

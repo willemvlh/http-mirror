@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import Server from "./Server";
-import Table from "./Table";
+import { consoleTable } from "./Table";
 import chalk from "chalk";
 
 const version = require("../package.json")["version"];
@@ -10,7 +10,7 @@ if (!Number.isInteger(defaultPort)) {
   throw new Error("The supplied port should be an integer");
 }
 s.port = defaultPort;
-s.tableLogger = Table;
+s.tableLogger = consoleTable;
 s.start(() => {
   console.log(
     chalk.yellow(

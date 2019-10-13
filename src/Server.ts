@@ -74,12 +74,18 @@ class Server {
       }
     });
   }
-  stop(callback?: ((err: Error | undefined) => void) | undefined): void {
-    if (!this.isRunning) {
-      throw new Error("A server must have started before it can be stopped.");
-    }
-    this.server ? this.server.close(callback) : null;
-    this.isRunning = false;
+  stop(
+    callback?: ((err: Error | undefined) => void) | undefined
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (!this.isRunning) {
+        reject("A server must have started before it can be stopped.");
+      } else {
+        this.server ? this.server.close(callback) : null;
+        this.isRunning = false;
+        resolve();
+      }
+    });
   }
 }
 

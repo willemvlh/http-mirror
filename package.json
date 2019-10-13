@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch": "tsc --watch && nodemon dist/index.js",
     "serve": "tsc && node dist/index.js",
-    "test": "jest",
+    "test": "jest --runInBand",
     "start": "ts-node src/index.ts"
   },
   "repository": {

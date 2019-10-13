@@ -56,4 +56,5 @@ describe("No-reply option", () => {
   options.noReply = true;
   let handler = new TestRequestHandler(new NoLogger(), options);
   expect(handler.options.noReply).toBe(true);
+  expect(handler.shouldSendResponse()).toBe(false);
 });
