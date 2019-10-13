@@ -26,7 +26,7 @@ class RequestHandler {
     } else {
       res.end();
     }
-    this.onRequest(req);
+    this.options.onRequest ? this.options.onRequest(req) : this.onRequest(req);
     this.clearLog();
   };
 
