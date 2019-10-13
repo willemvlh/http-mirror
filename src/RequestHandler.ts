@@ -17,12 +17,12 @@ class RequestHandler {
     this.logger = logger;
     this.options = handlerOptions;
   }
-  shouldSendResponse = () => !this.options.noReply;
+  sendResponse = (body: any, res: express.Response) => res.send(body);
 
   handle = (req: express.Request, res: express.Response) => {
     res.status(this.options.statusCode);
-    if (this.shouldSendResponse()) {
-      res.send(req.body);
+    if (!this.options.noReply) {
+      this.sendResponse(req.body, res);
     } else {
       res.end();
     }
