@@ -1,5 +1,7 @@
 # A mocking server
 
+[![Build Status](https://travis-ci.org/wasmachien75/http-mirror.svg?branch=master)](https://travis-ci.org/wasmachien75/http-mirror)
+
 This program listens to HTTP requests and returns the body it is sent. More information is found in the console.
 
 ## Installing
