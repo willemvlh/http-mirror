@@ -1,8 +1,9 @@
 import app from "../src/App";
 import supertest from "supertest";
 import { TestRequestHandler } from "./TestRequestHandler";
-import { NoLogger } from "./NoLogger";
+import { TestLogger } from "./TestLoggers";
 import HandlerOptions from "../src/HandlerOptions";
+import RequestHandler from "../src/RequestHandler";
 
 const defaultHandler = new TestRequestHandler(new HandlerOptions());
 
@@ -106,5 +107,22 @@ describe("On request option", () => {
         expect(cb).toBeCalled();
         done();
       });
+  });
+});
+
+describe("The handler logging function", () => {
+  let logger = new TestLogger();
+  let handler = new RequestHandler(logger, new HandlerOptions());
+  it("should correctly log the body", () => {
+    handler.logBody(Buffer.from("biepboep"));
+    expect(logger.buffer).toContain("biepboep");
+  });
+  it("should correctly log the headers", () => {
+    handler.logHeaders({ accept: "application/xml" });
+    expect(logger.buffer).toEqual({ accept: "application/xml" });
+  });
+  it("should correctly log the parameters", () => {
+    handler.logParams("param");
+    expect(logger.buffer).toContain("param");
   });
 });
