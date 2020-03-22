@@ -1,5 +1,7 @@
 import RequestHandler from "../src/RequestHandler";
 import LogObject from "./LogObject";
+import HandlerOptions from "../src/HandlerOptions";
+import { NoLogger } from "../src/Logger";
 export class TestRequestHandler extends RequestHandler {
   logObject: LogObject = {
     time: "",
@@ -16,4 +18,7 @@ export class TestRequestHandler extends RequestHandler {
       return str;
     };
   };
+  constructor(options: HandlerOptions) {
+    super(new NoLogger(), options);
+  }
 }

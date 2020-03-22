@@ -31,5 +31,11 @@ class Logger implements ILogger {
   clear() {}
 }
 
-export { Logger, ILogger };
+class NoLogger extends Logger {
+  constructor() {
+    super(null, null);
+  }
+}
+
+export { Logger, ILogger, NoLogger };
 export default Logger;

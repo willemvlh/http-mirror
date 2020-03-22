@@ -1,9 +1,11 @@
 import app from "./App";
-import Logger from "./Logger";
+import Logger, { NoLogger } from "./Logger";
 import RequestHandler from "./RequestHandler";
 import { Server as httpServer } from "http";
+import HandlerOptions from "./HandlerOptions";
 
-class Api {
+class Server {
+  //properties
   public port: Number = 3000;
   public endpoint: string = "/*";
   public server?: httpServer = undefined;
@@ -11,11 +13,19 @@ class Api {
   public logger: ((subject: any) => void) | null = console.log;
   public tableLogger: ((subject: any) => void) | null = console.table;
   public isRunning: boolean = false;
-  public onRequest: ((req: Express.Request) => void) | undefined = undefined;
+  public onRequest: (req: Express.Request) => void = () => {};
+  public silent: boolean = false; // do not log requests
+  public noReply: boolean = false; //do not send an answer
+  public statusCode: number = 200;
 
   private setup() {
-    const logger = new Logger(this.logger, this.tableLogger);
-    let handler = new RequestHandler(logger);
+    //setup handler
+    const logger = this.silent
+      ? new NoLogger()
+      : new Logger(this.logger, this.tableLogger);
+    let options = this.initializeHandlerOptions();
+    let handler = new RequestHandler(logger, options);
+    //get correct Express handler based on the selected or default HTTP method.
     switch (this.httpMethod.toUpperCase()) {
       case "GET":
         return app.get(this.endpoint, handler.handle);
@@ -33,18 +43,24 @@ class Api {
         return app.all(this.endpoint, handler.handle);
     }
   }
-  log(message: string): Api {
-    if (this.logger != null) {
-      this.logger(message);
-    }
+  initializeHandlerOptions(): HandlerOptions {
+    let options = new HandlerOptions();
+    options.noReply = this.noReply;
+    options.onRequest = this.onRequest;
+    options.statusCode = this.statusCode;
+
+    return options;
+  }
+  log(message: string): Server {
+    console.log(message);
     return this;
   }
 
-  start(callback?: Function): Promise<Api> {
+  start(callback?: Function): Promise<Server> {
     let port = this.port;
-    let self: Api = this;
+    let self: Server = this;
     this.setup();
-    return new Promise<Api>(function(resolve, reject) {
+    return new Promise<Server>(function(resolve, reject) {
       try {
         self.server = app.listen(port, () => {
           if (callback != null || callback != undefined) {
@@ -62,13 +78,19 @@ class Api {
       }
     });
   }
-  stop(callback?: ((err: Error | undefined) => void) | undefined): void {
-    if (!this.isRunning) {
-      throw new Error("A server must have started before it can be stopped.");
-    }
-    this.server ? this.server.close(callback) : null;
-    this.isRunning = false;
+  stop(
+    callback?: ((err: Error | undefined) => void) | undefined
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (!this.isRunning) {
+        reject("A server must have started before it can be stopped.");
+      } else {
+        this.server ? this.server.close(callback) : null;
+        this.isRunning = false;
+        resolve();
+      }
+    });
   }
 }
 
-export default Api;
+export default Server;

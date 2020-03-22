@@ -23,7 +23,7 @@ class StringBuilder {
   }
 }
 
-function table(object: any) {
+function table(object: any): string {
   const stringBuilder: StringBuilder = new StringBuilder();
   let longestKeyLength: number = Math.max(
     ...Object.keys(object).map(key => key.length)
@@ -53,7 +53,12 @@ function table(object: any) {
   }
 
   stringBuilder.appendLine(borderLine(lineLength()));
-  console.log(stringBuilder.toString());
+  return stringBuilder.toString();
+}
+
+function consoleTable(object: any) {
+  console.log(table(object));
 }
 
 export default table;
+export { consoleTable };

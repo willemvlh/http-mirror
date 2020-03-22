@@ -2,8 +2,10 @@ import express = require("express");
 import chalk from "chalk";
 import { IncomingHttpHeaders } from "http";
 import { ILogger } from "./Logger";
+import HandlerOptions from "./HandlerOptions";
 
 class RequestHandler {
+  options: HandlerOptions;
   logger: ILogger;
   colorMap: { [s: string]: Function } = {
     POST: chalk.bgGreen,
@@ -11,16 +13,20 @@ class RequestHandler {
     PUT: chalk.bgYellow.black,
     DELETE: chalk.bgRed
   };
-  constructor(logger: ILogger, onRequest?: (req: express.Request) => void) {
+  constructor(logger: ILogger, handlerOptions: HandlerOptions) {
     this.logger = logger;
-    if (onRequest != undefined) {
-      this.onRequest = onRequest;
-    }
+    this.options = handlerOptions;
   }
+  sendResponse = (body: any, res: express.Response) => res.send(body);
+
   handle = (req: express.Request, res: express.Response) => {
-    res.status(200);
-    res.send(req.body);
-    this.onRequest(req);
+    res.status(this.options.statusCode);
+    if (!this.options.noReply) {
+      this.sendResponse(req.body, res);
+    } else {
+      res.end();
+    }
+    this.options.onRequest ? this.options.onRequest(req) : this.onRequest(req);
     this.clearLog();
   };
 

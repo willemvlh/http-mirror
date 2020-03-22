@@ -20,7 +20,7 @@ describe("API testing", () => {
     api.endpoint = "/test";
     await api.start();
     expect(api.isRunning).toBe(true);
-    api.stop();
+    await api.stop();
     expect(api.isRunning).toBe(false);
     done();
   });
@@ -34,7 +34,7 @@ describe("API testing", () => {
     expect(axios.put(url)).rejects.toThrow();
     let response = await axios.post(url);
     expect(response.status).toBe(200);
-    api.stop();
+    await api.stop();
     done();
   });
 
@@ -64,15 +64,15 @@ describe("API testing", () => {
     const url = `http://localhost:${api.port}/something`;
     const result = await axios.get(url);
     expect(result.status).toBe(200);
-    api.stop();
+    await api.stop();
     done();
   });
 
   it("Should stop when told to", async done => {
     const api = newAPI();
     await api.start(() => console.log("Starting"));
-    api.stop();
     const url = `http://localhost:${api.port}/something`;
+    await api.stop();
     try {
       await axios.get(url, { timeout: 1000 });
       fail();
@@ -96,9 +96,11 @@ describe("API testing", () => {
     const api = newAPI();
     expect(api.isRunning).toBe(false);
     try {
-      api.stop();
+      await api.stop();
       fail();
     } catch {
+      //succeed
+    } finally {
       done();
     }
   });
