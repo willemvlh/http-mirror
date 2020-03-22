@@ -84,12 +84,16 @@ describe("API testing", () => {
 
   it("API should keep running even if callback throws error", async done => {
     const api = newAPI();
-    api
-      .start(() => {
-        throw new Error();
-      })
-      .catch(_ => expect(api.isRunning).toBe(true))
-      .finally(() => done());
+    try {
+      await api.start(() => {
+        throw new Error("error");
+      });
+    } catch (e) {
+      expect(api.isRunning).toBe(true);
+      await api.stop();
+      expect(e.message).toBe("error");
+      done();
+    }
   });
 
   it("A server can't be stopped when it's not running", async done => {

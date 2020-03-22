@@ -63,7 +63,7 @@ class Server {
     return new Promise<Server>(function(resolve, reject) {
       try {
         self.server = app.listen(port, () => {
-          if (callback != null || callback != undefined) {
+          if (callback != null && callback != undefined) {
             try {
               callback();
             } catch (e) {

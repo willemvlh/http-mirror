@@ -1,14 +1,6 @@
 node_modules
-<<<<<<< HEAD
-.vscode/*
-!.vscode/launch.json
-/dist
-index.js
-/coverage
-=======
 /.vscode/*
 !/.vscode/launch.json
 /dist
 index.js
 /coverage
->>>>>>> 69c2d701d1c6ee9e2e65475c342fd5d18f63125d
