@@ -1,12 +1,22 @@
 import TestApi from "./TestApi";
-
 import axios from "axios";
+import Api from "../src/Server";
+
+let initialPort = 3001;
+
+function newAPI(method?: string): Api {
+  initialPort++;
+  let api = new TestApi();
+  if (method) {
+    api.httpMethod = method;
+  }
+  api.port = initialPort;
+  return api;
+}
 
 describe("API testing", () => {
   it("Should not crash", async done => {
-    const api = new TestApi();
-    api.port = 4000;
-    api.httpMethod = "GET";
+    const api = newAPI("GET");
     api.endpoint = "/test";
     await api.start();
     expect(api.isRunning).toBe(true);
@@ -16,9 +26,7 @@ describe("API testing", () => {
   });
 
   it("The method should be configurable", async done => {
-    const api = new TestApi();
-    api.httpMethod = "POST";
-    api.port = 3102;
+    const api = newAPI("POST");
     await api.start();
     const url = `http://localhost:${api.port}/something`;
     expect(axios.get(url)).rejects.toThrow();
@@ -27,6 +35,24 @@ describe("API testing", () => {
     let response = await axios.post(url);
     expect(response.status).toBe(200);
     api.stop();
+    done();
+  });
+
+  it("all methods should work", async done => {
+    let map: Map<string, Function> = new Map();
+    map.set("DELETE", axios.delete);
+    map.set("PATCH", axios.put);
+    map.set("HEAD", axios.head);
+    map.set("PUT", axios.put);
+    2;
+    map.forEach(async (v, k) => {
+      const api = newAPI(k);
+      await api.start();
+      let url = `http://localhost:${api.port}`;
+      let result = await v(url);
+      expect(result.status).toBe(200);
+      api.stop();
+    });
     done();
   });
 
@@ -43,14 +69,35 @@ describe("API testing", () => {
   });
 
   it("Should stop when told to", async done => {
-    const api = new TestApi();
-    api.port = 9999;
-    await api.start;
+    const api = newAPI();
+    await api.start(() => console.log("Starting"));
+    api.stop();
     const url = `http://localhost:${api.port}/something`;
     try {
       await axios.get(url, { timeout: 1000 });
       fail();
+    } catch {
       done();
+    }
+    done();
+  });
+
+  it("API should keep running even if callback throws error", async done => {
+    const api = newAPI();
+    api
+      .start(() => {
+        throw new Error();
+      })
+      .catch(_ => expect(api.isRunning).toBe(true))
+      .finally(() => done());
+  });
+
+  it("A server can't be stopped when it's not running", async done => {
+    const api = newAPI();
+    expect(api.isRunning).toBe(false);
+    try {
+      api.stop();
+      fail();
     } catch {
       done();
     }

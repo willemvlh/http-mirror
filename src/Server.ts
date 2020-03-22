@@ -4,7 +4,6 @@ import RequestHandler from "./RequestHandler";
 import { Server as httpServer } from "http";
 
 class Api {
-  //properties
   public port: Number = 3000;
   public endpoint: string = "/*";
   public server?: httpServer = undefined;
@@ -15,10 +14,8 @@ class Api {
   public onRequest: ((req: Express.Request) => void) | undefined = undefined;
 
   private setup() {
-    //setup handler
     const logger = new Logger(this.logger, this.tableLogger);
     let handler = new RequestHandler(logger);
-    //get correct Express handler based on the selected or default HTTP method.
     switch (this.httpMethod.toUpperCase()) {
       case "GET":
         return app.get(this.endpoint, handler.handle);
@@ -37,7 +34,9 @@ class Api {
     }
   }
   log(message: string): Api {
-    console.log(message);
+    if (this.logger != null) {
+      this.logger(message);
+    }
     return this;
   }
 
@@ -49,7 +48,11 @@ class Api {
       try {
         self.server = app.listen(port, () => {
           if (callback != null || callback != undefined) {
-            callback();
+            try {
+              callback();
+            } catch (e) {
+              reject(e);
+            }
           }
           self.isRunning = true;
           resolve(self);

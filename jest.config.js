@@ -4,5 +4,8 @@ module.exports = {
     "ts-jest": {
       diagnostics: true
     }
-  }
+  },
+  coverageReporters: ["text", "lcov"],
+  coverageDirectory: "coverage",
+  collectCoverageFrom: ["src/*", "!src/index.ts"]
 };
